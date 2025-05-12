@@ -1,0 +1,10 @@
+Este script actualiza la columna "dif" de la tabla Timezone. 
+Para ello, obtiene a traves de una API los horarios actualizados según la location.
+
+WEB API: https://app.abstractapi.com/
+
+Para obtener estos valores es necesario crear un usuario y obtener un API_KEY (esto se hace sólo una vez)
+El API_KEY se debe actualizar en el script en caso de ser necesario. 
+
+El script obtiene la información actualizada de la API y contrasta vs la tabla Timezone para verificar que todos los UTC_offset estén actualizados.
+En caso de existir una diferencia, los actualiza y se detalla en la terminal el cambio realizado.
