@@ -1,6 +1,7 @@
-Este script actualiza la columna "dif" de la tabla Timezone. 
-Para ello, obtiene a traves de una API los horarios actualizados según la location.
+Este script actualiza la columna "dif" de la tabla Timezone y genera una entrada en la tabla Timezones_changes para cada partner cuya location haya tenido una modificación
+en su gmt_offset.
 
+Para ello, obtiene a traves de una API los horarios actualizados según la location.
 WEB API: https://app.abstractapi.com/
 
 Para obtener estos valores es necesario crear un usuario y obtener un API_KEY (esto se hace sólo una vez)
