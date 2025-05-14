@@ -3,6 +3,7 @@ import pyodbc as db
 import os
 import time
 from dotenv import load_dotenv 
+from datetime import date
 
 load_dotenv()  # Carga automáticamente el archivo .env
 
@@ -40,12 +41,20 @@ def update_utc_offset (conn, locations):
             cursor.execute(f"SELECT dif from Timezones where location = '{location}'")
             actual_dif = cursor.fetchone()[0]
 
-            print(f''' UPDATE Timezones
-                                     SET dif = {utc_diff}
-                                     WHERE location = '{location}'
-                                 ''')
-
             if actual_dif != utc_diff:
+                cursor.execute(f''' SELECT IDPartner
+                                    FROM Timezones
+                                    WHERE location = '{location}'
+                                ''')
+                partners_to_update =  [row[0] for row in cursor.fetchall()]
+                partners_to_update = [x for x in partners_to_update if x is not None]
+                
+                for partner in partners_to_update:
+                    cursor.execute(f''' INSERT INTO Timezones_changes
+                                        VALUES ({partner}, '{date.today()}', {utc_diff})
+                                    ''')
+                    conn.commit()
+                
                 cursor.execute(f''' UPDATE Timezones
                                     SET dif = {utc_diff}
                                     WHERE location = '{location}'
@@ -56,7 +65,7 @@ def update_utc_offset (conn, locations):
                           offset_UTC anterior: {actual_dif} 
                           offset_UTC nuevo: {utc_diff} 
                       ''')
-                time.sleep(1)  # Espera 1 segundo para asegurar no incumplir con las normas de la api de 1 solicitud x segundo máx.
+            time.sleep(1)  # Espera 1 segundo para asegurar no incumplir con las normas de la api de 1 solicitud x segundo máx.
 
         except Exception as e:
             print (f"""Error al intentar actualizar el offset UTC de la timezone: {location}.
